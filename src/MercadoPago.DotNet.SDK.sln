@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MercadoPago.DotNet.4.5", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mercadopago", "MercadoPago.DotNet.2.0\mercadopago.csproj", "{9FBE5D72-F96C-4319-9AC0-47045C93423A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MercadoPago.DotNet.4.5.Tests", "..\tests\MercadoPago.DotNet.4.5.Tests\MercadoPago.DotNet.4.5.Tests.csproj", "{02A55187-CA74-4166-88FA-A66B4E21AC52}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{9FBE5D72-F96C-4319-9AC0-47045C93423A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FBE5D72-F96C-4319-9AC0-47045C93423A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FBE5D72-F96C-4319-9AC0-47045C93423A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02A55187-CA74-4166-88FA-A66B4E21AC52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02A55187-CA74-4166-88FA-A66B4E21AC52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02A55187-CA74-4166-88FA-A66B4E21AC52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02A55187-CA74-4166-88FA-A66B4E21AC52}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
