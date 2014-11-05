@@ -217,11 +217,7 @@ namespace MercadoPago.DotNet
                 filters.Add("offset", offset.ToString());
                 filters.Add("limit", limit.ToString());
 
-                //string filtersQuery = this.BuildQueryString(filters);
-
-                string uriPrefix = this.sandBoxMode ? "/sandbox" : "";
-
-                var collectionResult = await this.Get(uriPrefix + "/collections/search?access_token=" + accessToken, filters);
+                var collectionResult = await this.Get("/collections/search?access_token=" + accessToken, filters);
                 return collectionResult;
             }
             catch (Exception e)
