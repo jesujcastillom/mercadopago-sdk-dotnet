@@ -4,7 +4,6 @@ using Newtonsoft.Json.Serialization;
 
 namespace MercadoPago.DotNet
 {
-    [JsonObject(Title = "asdasd")]
     public class Payer
     {
         [JsonProperty(PropertyName = "name")]

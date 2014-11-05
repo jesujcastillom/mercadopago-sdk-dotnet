@@ -38,15 +38,17 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\Address.cs" />
+    <Compile Include="Model\BackUrls.cs" />
     <Compile Include="Model\Identification.cs" />
     <Compile Include="Model\Item.cs" />
+    <Compile Include="Model\PaymentMethodTypes.cs" />
+    <Compile Include="Model\Preference.cs" />
     <Compile Include="MP.cs" />
     <Compile Include="Model\Payer.cs" />
     <Compile Include="Model\Phone.cs" />
