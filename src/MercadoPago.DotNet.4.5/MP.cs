@@ -16,7 +16,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
@@ -363,18 +362,6 @@ namespace MercadoPago.DotNet
         }
 
         /*****************************************************************************************************/
-        
-        /// <summary>
-        /// Converts a Dictionary of strings into a URL query string.
-        /// </summary>
-        /// <param name="parameters">a dictionary containing a set of key/values that will be converted into a query string.</param>
-        /// <returns>a properly URL-encoded querystring</returns>
-        private string BuildQueryString(Dictionary<string, string> parameters)
-        {
-            var query = parameters.Select(x => x.Key + "=" + HttpUtility.UrlEncode((x.Value ?? "")));
-
-            return string.Join("&", query);
-        }
 
         #region Rest Client
 
