@@ -14,12 +14,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Net;
 
 namespace MercadoPago.DotNet
@@ -53,7 +50,7 @@ namespace MercadoPago.DotNet
             if (sandBoxMode)
             {
                 // Set the UriPrefix for ALL requests for SandBoxMode.
-                UriPrefix = "/sandbox";
+                RestClient.UriPrefix = "/sandbox";
             }
         }
 
@@ -80,7 +77,7 @@ namespace MercadoPago.DotNet
 
             //var appClientValuesQuery = this.BuildQueryString(appClientValues);
 
-            var accessdata = await this.Post("/oauth/token", appClientValues);
+            var accessdata = await RestClient.Post("/oauth/token", appClientValues);
 
             if (((int)accessdata["status"]) == 200)
             {
@@ -102,7 +99,7 @@ namespace MercadoPago.DotNet
             try
             {
                 var accessToken = await this.GetAccessToken();
-                var paymentInfo = await this.Get("/collections/notifications/" + id + "?access_token=" + accessToken);
+                var paymentInfo = await RestClient.Get("/collections/notifications/" + id + "?access_token=" + accessToken);
                 
                 return paymentInfo;
             }
@@ -123,7 +120,7 @@ namespace MercadoPago.DotNet
             {
                 var accessToken = await this.GetAccessToken();
                 
-                var authorizedPaymentInfo = await this.Get("/authorized_payments/" + id + "?access_token=" + accessToken);
+                var authorizedPaymentInfo = await RestClient.Get("/authorized_payments/" + id + "?access_token=" + accessToken);
                 return authorizedPaymentInfo;
             }
             catch (Exception e)
@@ -145,7 +142,7 @@ namespace MercadoPago.DotNet
                 var refundStatus = new JObject();
                 refundStatus["status"] = "refunded";
 
-                var response = await this.Put("/collections/" + id + "?access_token=" + accessToken, refundStatus);
+                var response = await RestClient.Put("/collections/" + id + "?access_token=" + accessToken, refundStatus);
 
                 return response;
             }
@@ -168,7 +165,7 @@ namespace MercadoPago.DotNet
                 var cancelStatus = new JObject();
                 cancelStatus["status"] = "cancelled";
 
-                var response = await this.Put("/collections/" + id + "?access_token=" + accessToken, cancelStatus);
+                var response = await RestClient.Put("/collections/" + id + "?access_token=" + accessToken, cancelStatus);
 
                 return response;
             }
@@ -191,7 +188,7 @@ namespace MercadoPago.DotNet
                 JObject cancelStatus = new JObject();
                 cancelStatus["status"] = "cancelled";
 
-                var response = await this.Put("/preapproval/" + id + "?access_token=" + accessToken, cancelStatus);
+                var response = await RestClient.Put("/preapproval/" + id + "?access_token=" + accessToken, cancelStatus);
 
                 return response;
             }
@@ -217,7 +214,7 @@ namespace MercadoPago.DotNet
                 filters.Add("offset", offset.ToString());
                 filters.Add("limit", limit.ToString());
 
-                var collectionResult = await this.Get("/collections/search?access_token=" + accessToken, filters);
+                var collectionResult = await RestClient.Get("/collections/search?access_token=" + accessToken, filters);
                 return collectionResult;
             }
             catch (Exception e)
@@ -248,7 +245,7 @@ namespace MercadoPago.DotNet
             {
                 var accessToken = await this.GetAccessToken();
 
-                var preferenceResult = await this.Post("/checkout/preferences?access_token=" + accessToken, preference);
+                var preferenceResult = await RestClient.Post("/checkout/preferences?access_token=" + accessToken, preference);
                 return preferenceResult;
             }
             catch (Exception e)
@@ -280,7 +277,7 @@ namespace MercadoPago.DotNet
             try
             {
                 var accessToken = await this.GetAccessToken();
-                var preferenceResult = await this.Put("/checkout/preferences/" + id + "?access_token=" + accessToken, preference);
+                var preferenceResult = await RestClient.Put("/checkout/preferences/" + id + "?access_token=" + accessToken, preference);
                 return preferenceResult;
             }
             catch (Exception e)
@@ -299,7 +296,7 @@ namespace MercadoPago.DotNet
             try
             {
                 var accessToken = await this.GetAccessToken();
-                var preferenceResult = await this.Get("/checkout/preferences/" + id + "?access_token=" + accessToken);
+                var preferenceResult = await RestClient.Get("/checkout/preferences/" + id + "?access_token=" + accessToken);
                 return preferenceResult;
             }
             catch (Exception e)
@@ -329,7 +326,7 @@ namespace MercadoPago.DotNet
             try
             {
                 var accessToken = await this.GetAccessToken();
-                var preapprovalPaymentResult = await this.Post("/preapproval?access_token=" + accessToken, preapprovalPayment);
+                var preapprovalPaymentResult = await RestClient.Post("/preapproval?access_token=" + accessToken, preapprovalPayment);
                 return preapprovalPaymentResult;
             }
             catch (Exception e)
@@ -348,7 +345,7 @@ namespace MercadoPago.DotNet
             try
             {
                 var accessToken = await this.GetAccessToken();
-                var preapprovalPaymentResult = await this.Get("/preapproval/" + id + "?access_token=" + accessToken);
+                var preapprovalPaymentResult = await RestClient.Get("/preapproval/" + id + "?access_token=" + accessToken);
                 return preapprovalPaymentResult;
             }
             catch (Exception e)
@@ -356,75 +353,6 @@ namespace MercadoPago.DotNet
                 return JObject.FromObject(e);
             }
         }
-
-        /*****************************************************************************************************/
-
-        #region Rest Client
-
-        private const string API_BASE_URL = "https://api.mercadolibre.com";
-        private const string MIME_JSON = "application/json";
-        private const string MIME_FORM = "application/x-www-form-urlencoded";
-
-        private string UriPrefix { get; set; }
-
-        private async Task<JObject> Exec(HttpMethod method, string uri, JObject data, IEnumerable<KeyValuePair<string,string>> parameters, string contentType)
-        {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(API_BASE_URL + UriPrefix + uri);
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MIME_JSON));
-                client.DefaultRequestHeaders.Add("User-Agent", "MercadoPago .NET SDK" + MP.Version);
-                var request = new HttpRequestMessage(method, uri);
-                
-                if (data != null)
-                    request.Content = new StringContent(data.ToString(), Encoding.UTF8, contentType);
-                else if (parameters != null && method == HttpMethod.Get)
-                {
-                    var c = new FormUrlEncodedContent(parameters);
-                    
-                    client.BaseAddress = new Uri(API_BASE_URL + UriPrefix + uri + "?" + c.ReadAsStringAsync().Result);
-
-                }
-                else if (parameters != null)
-                    request.Content = new FormUrlEncodedContent(parameters);
-
-                var response = await client.SendAsync(request);
-
-                var responseJson = await response.Content.ReadAsStringAsync();
-
-                var result = new JObject
-                {
-                    {"status", new JValue(response.StatusCode)},
-                    {"response", JObject.Parse(responseJson)}
-                };
-
-                return result;
-            }
-        }
-
-        public Task<JObject> Get(string uri, IEnumerable<KeyValuePair<string,string>> parameters = null, string contentType = MIME_JSON)
-        {
-            return Exec(HttpMethod.Get, uri, null, parameters, contentType);
-        }
-
-        public Task<JObject> Post(string uri, JObject data)
-        {
-            return Exec(HttpMethod.Post, uri, data, null, MIME_JSON);
-        }
-
-        public Task<JObject> Post(string uri, IEnumerable<KeyValuePair<string, string>> data)
-        {
-            return Exec(HttpMethod.Post, uri, null, data, MIME_FORM);
-        }
-
-        public Task<JObject> Put(string uri, JObject data, string contentType = MIME_JSON)
-        {
-            return Exec(HttpMethod.Put, uri, data, null,contentType);
-        }
-
-        
-
-        #endregion
     }
 }
 
