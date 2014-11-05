@@ -2,5 +2,7 @@ src/MercadoPago.DotNet.4.5/bin/
 src/MercadoPago.DotNet.4.5/obj/
 src/obj/
 bin/
+bin/mercadopago.dll
 src/MercadoPago.DotNet.2.0/obj/
 tests/MercadoPago.DotNet.4.5.Tests/obj/
+tests/MercadoPago.DotNet.4.5.Tests/MercadoPago.DotNet.4.5.Tests.Authentication.cs
