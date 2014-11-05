@@ -1,3 +1,5 @@
 src/MercadoPago.DotNet.4.5/bin/
 src/MercadoPago.DotNet.4.5/obj/
 src/obj/
+bin/
+src/MercadoPago.DotNet.2.0/obj/
