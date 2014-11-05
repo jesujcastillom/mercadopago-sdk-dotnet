@@ -44,7 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Address.cs" />
+    <Compile Include="Model\Identification.cs" />
+    <Compile Include="Model\Item.cs" />
     <Compile Include="MP.cs" />
+    <Compile Include="Model\Payer.cs" />
+    <Compile Include="Model\Phone.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
