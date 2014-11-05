@@ -36,6 +36,12 @@ namespace MercadoPago.DotNet
         private readonly string client_secret;
         private readonly bool sandBoxMode;
 
+        /// <summary>
+        /// Initializes a new instance of the MercadoPago client.
+        /// </summary>
+        /// <param name="client_id">your MercadoPago client_id. See </param>
+        /// <param name="client_secret"></param>
+        /// <param name="sandBoxMode"></param>
         public MP(string client_id, string client_secret, bool sandBoxMode = false)
         {
             //Ignore Server Certificate Errors by always validating to true.
@@ -155,7 +161,7 @@ namespace MercadoPago.DotNet
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<JObject> cancelPayment(string id)
+        public async Task<JObject> CancelPayment(string id)
         {
             try
             {
@@ -212,11 +218,11 @@ namespace MercadoPago.DotNet
                 filters.Add("offset", offset.ToString());
                 filters.Add("limit", limit.ToString());
 
-                string filtersQuery = this.BuildQueryString(filters);
+                //string filtersQuery = this.BuildQueryString(filters);
 
                 string uriPrefix = this.sandBoxMode ? "/sandbox" : "";
 
-                var collectionResult = await this.Get(uriPrefix + "/collections/search?" + filtersQuery + "&access_token=" + accessToken);
+                var collectionResult = await this.Get(uriPrefix + "/collections/search?access_token=" + accessToken, filters);
                 return collectionResult;
             }
             catch (Exception e)
@@ -389,9 +395,15 @@ namespace MercadoPago.DotNet
                 
                 if (data != null)
                     request.Content = new StringContent(data.ToString(), Encoding.UTF8, contentType);
+                else if (parameters != null && method == HttpMethod.Get)
+                {
+                    var c = new FormUrlEncodedContent(parameters);
+                    
+                    client.BaseAddress = new Uri(API_BASE_URL + UriPrefix + uri + "?" + c.ReadAsStringAsync().Result);
+
+                }
                 else if (parameters != null)
                     request.Content = new FormUrlEncodedContent(parameters);
-
 
                 var response = await client.SendAsync(request);
 
@@ -407,9 +419,9 @@ namespace MercadoPago.DotNet
             }
         }
 
-        public Task<JObject> Get(string uri, string contentType = MIME_JSON)
+        public Task<JObject> Get(string uri, IEnumerable<KeyValuePair<string,string>> parameters = null, string contentType = MIME_JSON)
         {
-            return Exec(HttpMethod.Get, uri, null, null, contentType);
+            return Exec(HttpMethod.Get, uri, null, parameters, contentType);
         }
 
         public Task<JObject> Post(string uri, JObject data)
