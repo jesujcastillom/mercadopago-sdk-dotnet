@@ -66,24 +66,16 @@ namespace MercadoPago.DotNet
                     
                 }
 
-                try
-                {
-                    var response = await client.SendAsync(request);
-                    var responseJson = await response.Content.ReadAsStringAsync();
+                var response = await client.SendAsync(request);
+                var responseJson = await response.Content.ReadAsStringAsync();
 
-                    var result = new JObject
+                var result = new JObject
                 {
                     {"status", new JValue(response.StatusCode)},
                     {"response", JObject.Parse(responseJson)}
                 };
 
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    Debug.Print(ex.Message);
-                    throw;
-                }
+                return result;
             }
         }
 
