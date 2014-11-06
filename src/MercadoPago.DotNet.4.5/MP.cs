@@ -113,9 +113,9 @@ namespace MercadoPago.DotNet
                 var refundStatus = new JObject();
                 refundStatus["status"] = "refunded";
 
-                var response = await restClient.Put("/collections/" + id, refundStatus);
+                var response = await restClient.Put<JObject,JObject>("/collections/" + id, refundStatus);
 
-                return response;
+                return response.Payload;
             }
             catch (Exception e)
             {
@@ -135,9 +135,9 @@ namespace MercadoPago.DotNet
                 var cancelStatus = new JObject();
                 cancelStatus["status"] = "cancelled";
 
-                var response = await restClient.Put("/collections/" + id, cancelStatus);
+                var response = await restClient.Put<JObject, JObject>("/collections/" + id, cancelStatus);
 
-                return response;
+                return response.Payload;
             }
             catch (Exception e)
             {
@@ -157,9 +157,9 @@ namespace MercadoPago.DotNet
                 JObject cancelStatus = new JObject();
                 cancelStatus["status"] = "cancelled";
 
-                var response = await restClient.Put("/preapproval/" + id, cancelStatus);
+                var response = await restClient.Put<JObject, JObject>("/preapproval/" + id, cancelStatus);
 
-                return response;
+                return response.Payload;
             }
             catch (Exception e)
             {
@@ -211,17 +211,10 @@ namespace MercadoPago.DotNet
         /// <param name="id"></param>
         /// <param name="preference"></param>
         /// <returns></returns>
-        public async Task<JObject> UpdatePreference(string id, JObject preference)
+        public async Task<Preference> UpdatePreference(Preference preference)
         {
-            try
-            {
-                var preferenceResult = await restClient.Put("/checkout/preferences/" + id, preference);
-                return preferenceResult;
-            }
-            catch (Exception e)
-            {
-                return JObject.FromObject(e);
-            }
+            var result = await restClient.Put<Preference, Preference>("/checkout/preferences/" + preference.Id, preference);
+            return result.Payload;
         }
 
         /// <summary>

@@ -8,7 +8,7 @@ namespace MercadoPago.DotNet
         private readonly List<Item> items = new List<Item>();
 
         [JsonProperty(PropertyName = "collector_id")]
-        public string CollectorId { get; set; }
+        public long? CollectorId { get; set; }
 
         [JsonProperty(PropertyName = "operation_type")]
         public string OperationType { get; set; }

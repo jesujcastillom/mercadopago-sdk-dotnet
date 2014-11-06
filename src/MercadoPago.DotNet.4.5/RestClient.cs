@@ -1,16 +1,11 @@
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
-using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Net;
-using System.Diagnostics;
 
 namespace MercadoPago.DotNet
 {
@@ -79,7 +74,7 @@ namespace MercadoPago.DotNet
             }
         }
 
-        internal async Task<Response<TResponse>> Exec<TResponse,TContent>(HttpMethod method, string uri, TContent content, ICollection<KeyValuePair<string, string>> parameters, string contentType = MIME_JSON, bool requiresAccessToken = true) where TResponse:class where TContent:class
+        private async Task<Response<TResponse>> Exec<TResponse,TContent>(HttpMethod method, string uri, TContent content, ICollection<KeyValuePair<string, string>> parameters, string contentType = MIME_JSON, bool requiresAccessToken = true) where TResponse:class where TContent:class
         {
             var result = await Exec(method, uri, content.ToJson(), parameters, contentType, requiresAccessToken);
             
@@ -91,14 +86,14 @@ namespace MercadoPago.DotNet
             return Exec<TResponse,object>(HttpMethod.Get, uri, null, parameters, MIME_JSON);
         }
 
-        internal Task<Response<TResponse>> Post<TResponse, TContent>(string uri, TContent content, bool requiresAccessToken = true) where TResponse:class where TContent:class
+        public Task<Response<TResponse>> Post<TResponse, TContent>(string uri, TContent content, bool requiresAccessToken = true) where TResponse:class where TContent:class
         {
             return Exec<TResponse,TContent>(HttpMethod.Post, uri, content, null, MIME_JSON, requiresAccessToken);
         }
 
-        public Task<JObject> Put(string uri, JObject data, string contentType = MIME_JSON, bool requiresAccessToken = true)
+        public Task<Response<TResponse>> Put<TResponse, TContent>(string uri, TContent content, string contentType = MIME_JSON, bool requiresAccessToken = true) where TContent:class where TResponse:class
         {
-            return Exec(HttpMethod.Put, uri, data, null, contentType, requiresAccessToken);
+            return Exec<TResponse,TContent>(HttpMethod.Put, uri, content, null, contentType, requiresAccessToken);
         }
 
         /// <summary>
@@ -126,7 +121,7 @@ namespace MercadoPago.DotNet
                 {"client_id", this.client_id},
                 {"client_secret", this.client_secret}
             };
-
+            
             var response = await Exec<AuthenticationInfo,object>(HttpMethod.Post, "/oauth/token", null, appClientValues, MIME_FORM, false);
 
             if (response.Status == HttpStatusCode.OK)

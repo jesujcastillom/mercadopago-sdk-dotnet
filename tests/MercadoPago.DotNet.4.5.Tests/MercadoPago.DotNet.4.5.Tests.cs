@@ -29,7 +29,7 @@ namespace MercadoPago.DotNet.Tests
 
             tests.SerializationTest();
             tests.SearchPayments();
-            tests.CreatePreference();
+            tests.PreferenceOperations();
         }
 
         
@@ -71,7 +71,7 @@ namespace MercadoPago.DotNet.Tests
         }
 
         [Test]
-        public void CreatePreference()
+        public void PreferenceOperations()
         {
             var pref = new Preference()
             {
@@ -102,6 +102,23 @@ namespace MercadoPago.DotNet.Tests
 
             // Verify number of items match
             Assert.AreEqual(result.Items.Count, reloaded.Items.Count);
+
+            // Modify some preference property and send the Update
+            reloaded.Items.Add(new Item()
+            {
+                Title = "new Item from sdk-dotnet",
+                Quantity = 1,
+                CurrencyId = "ARS",
+                UnitPrice = 5
+            });
+            
+            var modified = mp.UpdatePreference(reloaded).Result;
+
+            // Verify the modifications were done correctly.
+            Assert.AreNotEqual(result.Items.Count, modified.Items.Count);
+            Assert.AreEqual(modified.Items.Count, 2);
+            Assert.AreEqual(modified.Items[1].UnitPrice, 5m);
+
         }
     }
 }
