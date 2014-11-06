@@ -13,7 +13,7 @@ namespace MercadoPago.DotNet
         public string Surname { get; set; }
 
         [JsonProperty(PropertyName = "date_created")]
-        public DateTime DateCreated { get; set; }
+        public DateTime? DateCreated { get; set; }
 
         [JsonProperty(PropertyName = "phone")]
         public Phone Phone { get; set; }
