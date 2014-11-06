@@ -53,9 +53,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\MercadoPago.DotNet.4.5.Tests\MercadoPago.DotNet.4.5.Tests.Authentication.cs">
-      <Link>MercadoPago.DotNet.4.5.Tests.Authentication.cs</Link>
-    </Compile>
     <Compile Include="..\MercadoPago.DotNet.4.5.Tests\MercadoPago.DotNet.4.5.Tests.cs">
       <Link>MercadoPago.DotNet.4.5.Tests.cs</Link>
     </Compile>

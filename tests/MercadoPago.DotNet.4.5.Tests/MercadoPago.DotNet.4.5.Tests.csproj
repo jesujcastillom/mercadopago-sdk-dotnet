@@ -51,7 +51,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MercadoPago.DotNet.4.5.Tests.cs" />
-    <Compile Include="MercadoPago.DotNet.4.5.Tests.Authentication.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -34,6 +34,11 @@ namespace MercadoPago.DotNet.Tests
 
         private static void EnsureClient()
         {
+            if (Client_ID == null || Client_Secret == null)
+            {
+                throw new Exception("Need to set the Client ID and Client Secret in order to run these tests.\r\nSee https://developers.mercadopago.com/documentation/authentication.");
+            }
+
             if (mp == null)
             {
                 mp = new MP(Client_ID, Client_Secret);
