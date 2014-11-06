@@ -9,6 +9,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mercadopago", "MercadoPago.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MercadoPago.DotNet.4.5.Tests", "..\tests\MercadoPago.DotNet.4.5.Tests\MercadoPago.DotNet.4.5.Tests.csproj", "{02A55187-CA74-4166-88FA-A66B4E21AC52}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MercadoPago.DotNet.Portable", "MercadoPago.DotNet.Portable\MercadoPago.DotNet.Portable.csproj", "{C014249C-24DD-425C-9D8C-E12AA81D5893}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{D159106F-F320-488D-9B1D-D8F5DF710354}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D763B302-5A62-4EDF-88E1-63E8550F16A3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MercadoPago.DotNet.Portable.Tests", "..\tests\MercadoPago.DotNet.Portable.Tests\MercadoPago.DotNet.Portable.Tests.csproj", "{0F36A3E7-6CC1-4110-9B0A-544FA1733E3F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,9 +35,24 @@ Global
 		{02A55187-CA74-4166-88FA-A66B4E21AC52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02A55187-CA74-4166-88FA-A66B4E21AC52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02A55187-CA74-4166-88FA-A66B4E21AC52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C014249C-24DD-425C-9D8C-E12AA81D5893}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C014249C-24DD-425C-9D8C-E12AA81D5893}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C014249C-24DD-425C-9D8C-E12AA81D5893}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C014249C-24DD-425C-9D8C-E12AA81D5893}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F36A3E7-6CC1-4110-9B0A-544FA1733E3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F36A3E7-6CC1-4110-9B0A-544FA1733E3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F36A3E7-6CC1-4110-9B0A-544FA1733E3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F36A3E7-6CC1-4110-9B0A-544FA1733E3F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{59970ABE-C4D3-474D-AA5C-882CFF40AD81} = {D159106F-F320-488D-9B1D-D8F5DF710354}
+		{C014249C-24DD-425C-9D8C-E12AA81D5893} = {D159106F-F320-488D-9B1D-D8F5DF710354}
+		{9FBE5D72-F96C-4319-9AC0-47045C93423A} = {D159106F-F320-488D-9B1D-D8F5DF710354}
+		{02A55187-CA74-4166-88FA-A66B4E21AC52} = {D763B302-5A62-4EDF-88E1-63E8550F16A3}
+		{0F36A3E7-6CC1-4110-9B0A-544FA1733E3F} = {D763B302-5A62-4EDF-88E1-63E8550F16A3}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = mercadopago.csproj

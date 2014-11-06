@@ -40,9 +40,10 @@ namespace MercadoPago.DotNet
         /// <param name="sandBoxMode">Enable SandBox Mode. For details see http://developers.mercadopago.com/sandbox</param>
         public MP(string client_id, string client_secret, bool sandBoxMode = false)
         {
+#if NET45
             //Ignore Server Certificate Errors by always validating to true.
             ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
-
+#endif
             this.restClient = new RestClient(client_id, client_secret);
             this.sandBoxMode = sandBoxMode;
 

@@ -4,25 +4,28 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{02A55187-CA74-4166-88FA-A66B4E21AC52}</ProjectGuid>
+    <ProjectGuid>{0F36A3E7-6CC1-4110-9B0A-544FA1733E3F}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MercadoPago.DotNet._4._5.Tests</RootNamespace>
-    <AssemblyName>MercadoPago.DotNet.4.5.Tests</AssemblyName>
+    <RootNamespace>MercadoPago.DotNet.Portable.Tests</RootNamespace>
+    <AssemblyName>MercadoPago.DotNet.Portable.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\bin\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET45</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;PCL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -50,22 +53,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MercadoPago.DotNet.4.5.Tests.cs" />
-    <Compile Include="MercadoPago.DotNet.4.5.Tests.Authentication.cs" />
+    <Compile Include="..\MercadoPago.DotNet.4.5.Tests\MercadoPago.DotNet.4.5.Tests.Authentication.cs">
+      <Link>MercadoPago.DotNet.4.5.Tests.Authentication.cs</Link>
+    </Compile>
+    <Compile Include="..\MercadoPago.DotNet.4.5.Tests\MercadoPago.DotNet.4.5.Tests.cs">
+      <Link>MercadoPago.DotNet.4.5.Tests.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+    <ProjectReference Include="..\..\src\MercadoPago.DotNet.Portable\MercadoPago.DotNet.Portable.csproj">
+      <Project>{c014249c-24dd-425c-9d8c-e12aa81d5893}</Project>
+      <Name>MercadoPago.DotNet.Portable</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\MercadoPago.DotNet.4.5\MercadoPago.DotNet.4.5.csproj">
-      <Project>{59970abe-c4d3-474d-aa5c-882cff40ad81}</Project>
-      <Name>MercadoPago.DotNet.4.5</Name>
-    </ProjectReference>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -16,6 +17,11 @@ namespace MercadoPago.DotNet.Tests
 
         static void Main(string[] args)
         {
+            // If the test targets the PCL, then we need to set the certificate validation callback here. 
+            // Because PCLs don't have the ServicePointManager class.
+#if PCL
+            ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
+#endif
             var tests = new MPTests();
 
             mp = new MP(Client_ID, Client_Secret);
