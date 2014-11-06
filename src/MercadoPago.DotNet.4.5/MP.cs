@@ -191,33 +191,6 @@ namespace MercadoPago.DotNet
         }
 
         /// <summary>
-        /// Create a checkout preference
-        /// </summary>
-        /// <param name="preference"></param>
-        /// <returns></returns>
-        public async Task<Preference> CreatePreference(Preference preference)
-        {
-            var result = await restClient.Post<Preference,Preference>("/checkout/preferences", preference);
-
-            if (result.Status != HttpStatusCode.Created)
-                throw new Exception(result.Status.ToString());
-            
-            return result.Payload;
-        }
-
-        /// <summary>
-        /// Update a checkout preference
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="preference"></param>
-        /// <returns></returns>
-        public async Task<Preference> UpdatePreference(Preference preference)
-        {
-            var result = await restClient.Put<Preference, Preference>("/checkout/preferences/" + preference.Id, preference);
-            return result.Payload;
-        }
-
-        /// <summary>
         /// Get a checkout preference
         /// </summary>
         /// <param name="id"></param>
@@ -226,21 +199,55 @@ namespace MercadoPago.DotNet
         {
             var result = await restClient.Get<Preference>("/checkout/preferences/" + id);
 
-            if (result.Status != HttpStatusCode.OK)
-                throw new Exception(result.Status.ToString());
+            RequireStatus(result, HttpStatusCode.OK);
                 
             return result.Payload;
         }
 
         /// <summary>
-        /// Create a preapproval payment
+        /// Create a checkout preference
         /// </summary>
-        /// <param name="preapprovalPayment"></param>
+        /// <param name="preference"></param>
         /// <returns></returns>
-        public Task<JObject> CreatePreapprovalPayment(string preapprovalPayment)
+        public async Task<Preference> CreatePreference(Preference preference)
         {
-            JObject preapprovalPaymentJSON = JObject.Parse(preapprovalPayment);
-            return this.CreatePreapprovalPayment(preapprovalPaymentJSON);
+            var result = await restClient.Post<Preference,Preference>("/checkout/preferences", preference);
+
+            RequireStatus(result, HttpStatusCode.Created);
+            
+            return result.Payload;
+        }
+
+        /// <summary>
+        /// Update a checkout preference
+        /// </summary>
+        /// <param name="preference"></param>
+        /// <returns></returns>
+        public async Task<Preference> UpdatePreference(Preference preference)
+        {
+            var result = await restClient.Put<Preference, Preference>("/checkout/preferences/" + preference.Id, preference);
+
+            RequireStatus(result,HttpStatusCode.OK);
+            
+            return result.Payload;
+        }
+
+        /// <summary>
+        /// Get a preapproval payment
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<JObject> GetPreapprovalPayment(string id)
+        {
+            try
+            {
+                var preapprovalPaymentResult = await restClient.Get<JObject>("/preapproval/" + id);
+                return preapprovalPaymentResult.Payload;
+            }
+            catch (Exception e)
+            {
+                return JObject.FromObject(e);
+            }
         }
 
         /// <summary>
@@ -261,21 +268,11 @@ namespace MercadoPago.DotNet
             }
         }
 
-        /// <summary>
-        /// Get a preapproval payment
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public async Task<JObject> GetPreapprovalPayment(string id)
+        private void RequireStatus<T>(Response<T> response, HttpStatusCode requiredStatus)
         {
-            try
+            if (response.Status != requiredStatus)
             {
-                var preapprovalPaymentResult = await restClient.Get<JObject>("/preapproval/" + id);
-                return preapprovalPaymentResult.Payload;
-            }
-            catch (Exception e)
-            {
-                return JObject.FromObject(e);
+                throw new RESTException(response.RawData, response.Status, response.Status.ToString());
             }
         }
     }

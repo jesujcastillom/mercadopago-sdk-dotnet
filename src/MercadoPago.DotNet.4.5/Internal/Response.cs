@@ -12,10 +12,14 @@ namespace MercadoPago.DotNet
         [JsonProperty(PropertyName = "response")]
         public T Payload { get; private set; }
 
-        public Response(HttpStatusCode status, T payload)
+        [JsonIgnore]
+        public string RawData { get; private set; }
+
+        public Response(HttpStatusCode status, T payload, string rawData)
         {
             this.Status = status;
             this.Payload = payload;
+            this.RawData = rawData;
         }
     }
 }

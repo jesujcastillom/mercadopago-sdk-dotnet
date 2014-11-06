@@ -9,6 +9,7 @@
 // RESTful client for the MercadoPago Integration library.
 // ***********************************************************************
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -89,7 +90,9 @@ namespace MercadoPago.DotNet
         {
             var result = await Exec(method, uri, content.ToJson(), parameters, contentType, requiresAccessToken);
             
-            return new Response<TResponse>(result["status"].Value<HttpStatusCode>(), result["response"].To<TResponse>());
+            return new Response<TResponse>(result["status"].Value<HttpStatusCode>(), //Status code
+                                           result["response"].To<TResponse>(), //Deserialized object
+                                           result["response"].ToString(Formatting.Indented)); //Raw (string) data
         }
 
         /// <summary>

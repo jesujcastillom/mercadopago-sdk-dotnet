@@ -89,6 +89,9 @@
     <Compile Include="..\MercadoPago.DotNet.4.5\RestClient.cs">
       <Link>RestClient.cs</Link>
     </Compile>
+    <Compile Include="..\MercadoPago.DotNet.4.5\RESTException.cs">
+      <Link>RESTException.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
