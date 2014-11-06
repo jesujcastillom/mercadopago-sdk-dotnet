@@ -1,9 +1,33 @@
+using System;
 using Newtonsoft.Json;
 
 namespace MercadoPago.DotNet
 {
     internal class AuthenticationInfo
     {
+        public AuthenticationInfo()
+        {
+            CreationDate = DateTime.Now;
+        }
+
+        public DateTime CreationDate { get; private set; }
+
+        public DateTime ExpirationDate
+        {
+            get
+            {
+                return CreationDate.AddSeconds(ExpiresIn);
+            }
+        }
+
+        public bool IsExpired
+        {
+            get
+            {
+                return DateTime.Now > ExpirationDate;
+            }
+        }
+
         [JsonProperty(PropertyName = "access_token")]
         public string AccessToken { get; set; }
 
@@ -21,6 +45,10 @@ namespace MercadoPago.DotNet
 
         [JsonProperty(PropertyName = "refresh_token")]
         public string RefreshToken { get; set; }
+
         
+
+        
+
     }
 }

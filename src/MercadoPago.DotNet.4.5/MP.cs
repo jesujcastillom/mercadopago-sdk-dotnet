@@ -28,10 +28,10 @@ namespace MercadoPago.DotNet
     public class MP
     {
         public const string Version = "0.3.0";
+        private const string API_BASE_URL = "https://api.mercadolibre.com";
+        private readonly RestClient restClient;
+        private readonly bool sandBoxMode;
         
-        private readonly string client_id;
-        private readonly string client_secret;
-
         /// <summary>
         /// Initializes a new instance of the MercadoPago client.
         /// </summary>
@@ -43,15 +43,10 @@ namespace MercadoPago.DotNet
             //Ignore Server Certificate Errors by always validating to true.
             ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
 
-            this.client_id = client_id;
-            this.client_secret = client_secret;
-            RestClient.SandBoxMode = sandBoxMode;
+            this.restClient = new RestClient(client_id, client_secret);
+            this.sandBoxMode = sandBoxMode;
 
-            if (sandBoxMode)
-            {
-                // Set the UriPrefix for ALL requests for SandBoxMode.
-                RestClient.UriPrefix = "/sandbox";
-            }
+            this.restClient.BaseUrl = API_BASE_URL + (sandBoxMode ? "/sandbox" : string.Empty);
         }
 
         /// <summary>
@@ -59,44 +54,17 @@ namespace MercadoPago.DotNet
         /// </summary>
         public bool SandBoxMode
         {
-            get { return RestClient.SandBoxMode; }
+            get { return this.sandBoxMode; }
         }
 
         /// <summary>
-        /// Enables authentication token persistence. WARNING: this is intended to be used for client applications (desktop / mobile) and NOT Web Apps. It uses a static context which 
+        /// Enables authentication token persistence. WARNING: this is intended to be used for client apps (desktop / mobile) and NOT Web Applications. If used in a static context it can cause the wrong tokens to be shared between requests in an ASP.Net application.
         /// </summary>
         public void EnableTokenPersistence()
         {
-            
+            restClient.EnableTokenPersistence();    
         }
         
-        /// <summary>
-        /// Get Access Token for API use
-        /// </summary>
-        /// <returns>A time-limited Access Token for use with other operations.</returns>
-        public async Task<string> GetAccessToken()
-        {
-            var appClientValues = new Dictionary<string,string>()
-            {
-                {"grant_type", "client_credentials"},
-                {"client_id", this.client_id},
-                {"client_secret", this.client_secret}
-            };
-
-            //var typed = await RestClient.Exec<AuthenticationInfo>(HttpMethod.Post, "/oauth/token", null, appClientValues, "application/x-www-form-urlencoded");
-
-            var accessdata = await RestClient.Post("/oauth/token", appClientValues);
-            
-            if (((int)accessdata["status"]) == 200)
-            {
-                return accessdata["response"]["access_token"].Value<string>();
-            }
-            else
-            {
-                throw new Exception(accessdata.ToString());
-            }
-        }
-
         /// <summary>
         /// Get information for specific payment
         /// </summary>
@@ -106,9 +74,7 @@ namespace MercadoPago.DotNet
         {
             try
             {
-                var accessToken = await this.GetAccessToken();
-                var paymentInfo = await RestClient.Get("/collections/notifications/" + id + "?access_token=" + accessToken);
-                
+                var paymentInfo = await restClient.Get("/collections/notifications/" + id);
                 return paymentInfo;
             }
             catch (Exception e)
@@ -126,10 +92,7 @@ namespace MercadoPago.DotNet
         {
             try
             {
-                var accessToken = await this.GetAccessToken();
-                
-                var authorizedPaymentInfo = await RestClient.Get("/authorized_payments/" + id + "?access_token=" + accessToken);
-                return authorizedPaymentInfo;
+                return await restClient.Get("/authorized_payments/" + id);
             }
             catch (Exception e)
             {
@@ -146,11 +109,10 @@ namespace MercadoPago.DotNet
         {
             try
             {
-                var accessToken = await this.GetAccessToken();
                 var refundStatus = new JObject();
                 refundStatus["status"] = "refunded";
 
-                var response = await RestClient.Put("/collections/" + id + "?access_token=" + accessToken, refundStatus);
+                var response = await restClient.Put("/collections/" + id, refundStatus);
 
                 return response;
             }
@@ -169,11 +131,10 @@ namespace MercadoPago.DotNet
         {
             try
             {
-                var accessToken = await this.GetAccessToken();
                 var cancelStatus = new JObject();
                 cancelStatus["status"] = "cancelled";
 
-                var response = await RestClient.Put("/collections/" + id + "?access_token=" + accessToken, cancelStatus);
+                var response = await restClient.Put("/collections/" + id, cancelStatus);
 
                 return response;
             }
@@ -192,11 +153,10 @@ namespace MercadoPago.DotNet
         {
             try
             {
-                var accessToken = await this.GetAccessToken();
                 JObject cancelStatus = new JObject();
                 cancelStatus["status"] = "cancelled";
 
-                var response = await RestClient.Put("/preapproval/" + id + "?access_token=" + accessToken, cancelStatus);
+                var response = await restClient.Put("/preapproval/" + id, cancelStatus);
 
                 return response;
             }
@@ -213,16 +173,14 @@ namespace MercadoPago.DotNet
         /// <param name="offset"></param>
         /// <param name="limit"></param>
         /// <returns></returns>
-        public async Task<JObject> SearchPayments(Dictionary<string, string> filters, long offset = 0, long limit = 0)
+        public async Task<JObject> SearchPayments(Dictionary<string, string> filters, long offset = 0, long limit = 20)
         {
             try
             {
-                var accessToken = await this.GetAccessToken();
-
                 filters.Add("offset", offset.ToString());
                 filters.Add("limit", limit.ToString());
 
-                var collectionResult = await RestClient.Get("/collections/search?access_token=" + accessToken, filters);
+                var collectionResult = await restClient.Get("/collections/search", filters);
                 return collectionResult;
             }
             catch (Exception e)
@@ -251,9 +209,7 @@ namespace MercadoPago.DotNet
         {
             try
             {
-                var accessToken = await this.GetAccessToken();
-
-                var preferenceResult = await RestClient.Post("/checkout/preferences?access_token=" + accessToken, preference);
+                var preferenceResult = await restClient.Post("/checkout/preferences", preference);
                 return preferenceResult;
             }
             catch (Exception e)
@@ -284,8 +240,7 @@ namespace MercadoPago.DotNet
         {
             try
             {
-                var accessToken = await this.GetAccessToken();
-                var preferenceResult = await RestClient.Put("/checkout/preferences/" + id + "?access_token=" + accessToken, preference);
+                var preferenceResult = await restClient.Put("/checkout/preferences/" + id, preference);
                 return preferenceResult;
             }
             catch (Exception e)
@@ -303,8 +258,7 @@ namespace MercadoPago.DotNet
         {
             try
             {
-                var accessToken = await this.GetAccessToken();
-                var preferenceResult = await RestClient.Get("/checkout/preferences/" + id + "?access_token=" + accessToken);
+                var preferenceResult = await restClient.Get("/checkout/preferences/" + id);
                 return preferenceResult;
             }
             catch (Exception e)
@@ -333,8 +287,7 @@ namespace MercadoPago.DotNet
         {
             try
             {
-                var accessToken = await this.GetAccessToken();
-                var preapprovalPaymentResult = await RestClient.Post("/preapproval?access_token=" + accessToken, preapprovalPayment);
+                var preapprovalPaymentResult = await restClient.Post("/preapproval", preapprovalPayment);
                 return preapprovalPaymentResult;
             }
             catch (Exception e)
@@ -352,8 +305,7 @@ namespace MercadoPago.DotNet
         {
             try
             {
-                var accessToken = await this.GetAccessToken();
-                var preapprovalPaymentResult = await RestClient.Get("/preapproval/" + id + "?access_token=" + accessToken);
+                var preapprovalPaymentResult = await restClient.Get("/preapproval/" + id);
                 return preapprovalPaymentResult;
             }
             catch (Exception e)
