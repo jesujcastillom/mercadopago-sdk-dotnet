@@ -32,6 +32,14 @@ namespace MercadoPago.DotNet.Tests
             tests.PreferenceOperations();
         }
 
+        private static void EnsureClient()
+        {
+            if (mp == null)
+            {
+                mp = new MP(Client_ID, Client_Secret);
+                mp.EnableTokenPersistence();
+            }
+        }
         
         private static string Client_ID;
         private static string Client_Secret;
@@ -65,14 +73,18 @@ namespace MercadoPago.DotNet.Tests
         [Test]
         public void SearchPayments()
         {
+            EnsureClient();
+
             var result = mp.SearchPayments(new Dictionary<string, string> {{"site_id", "MLA"}}).Result;
 
             var s = result["status"];
         }
 
-        [Test]
+        [Test(Description = "Tests the GET, PUT and POST operations on https://api.mercadolibre.com/checkout/preferences using some dummy data and validates the consistency of the data returned.")]
         public void PreferenceOperations()
         {
+            EnsureClient();
+
             var pref = new Preference()
             {
                 Items =
