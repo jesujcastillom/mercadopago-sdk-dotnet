@@ -14,6 +14,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -30,14 +31,13 @@ namespace MercadoPago.DotNet
         
         private readonly string client_id;
         private readonly string client_secret;
-        private readonly bool sandBoxMode;
 
         /// <summary>
         /// Initializes a new instance of the MercadoPago client.
         /// </summary>
-        /// <param name="client_id">your MercadoPago client_id. See </param>
-        /// <param name="client_secret"></param>
-        /// <param name="sandBoxMode"></param>
+        /// <param name="client_id">Your MercadoPago client_id. See https://developers.mercadopago.com/documentation/authentication</param>
+        /// <param name="client_secret">Your MercadoPago client_secret. See https://developers.mercadopago.com/documentation/authentication</param>
+        /// <param name="sandBoxMode">Enable SandBox Mode. For details see http://developers.mercadopago.com/sandbox</param>
         public MP(string client_id, string client_secret, bool sandBoxMode = false)
         {
             //Ignore Server Certificate Errors by always validating to true.
@@ -45,7 +45,7 @@ namespace MercadoPago.DotNet
 
             this.client_id = client_id;
             this.client_secret = client_secret;
-            this.sandBoxMode = sandBoxMode;
+            RestClient.SandBoxMode = sandBoxMode;
 
             if (sandBoxMode)
             {
@@ -59,7 +59,15 @@ namespace MercadoPago.DotNet
         /// </summary>
         public bool SandBoxMode
         {
-            get { return this.sandBoxMode; }
+            get { return RestClient.SandBoxMode; }
+        }
+
+        /// <summary>
+        /// Enables authentication token persistence. WARNING: this is intended to be used for client applications (desktop / mobile) and NOT Web Apps. It uses a static context which 
+        /// </summary>
+        public void EnableTokenPersistence()
+        {
+            
         }
         
         /// <summary>
@@ -75,10 +83,10 @@ namespace MercadoPago.DotNet
                 {"client_secret", this.client_secret}
             };
 
-            //var appClientValuesQuery = this.BuildQueryString(appClientValues);
+            //var typed = await RestClient.Exec<AuthenticationInfo>(HttpMethod.Post, "/oauth/token", null, appClientValues, "application/x-www-form-urlencoded");
 
             var accessdata = await RestClient.Post("/oauth/token", appClientValues);
-
+            
             if (((int)accessdata["status"]) == 200)
             {
                 return accessdata["response"]["access_token"].Value<string>();
