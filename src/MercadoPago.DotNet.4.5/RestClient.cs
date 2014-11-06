@@ -31,7 +31,7 @@ namespace MercadoPago.DotNet
 
         public string BaseUrl { get; set; }
 
-        internal async Task<JObject> Exec(HttpMethod method, string uri, JObject content, ICollection<KeyValuePair<string, string>> parameters, string contentType, bool requiresAccessToken = true)
+        private async Task<JObject> Exec(HttpMethod method, string uri, JObject content, ICollection<KeyValuePair<string, string>> parameters, string contentType, bool requiresAccessToken = true)
         {
             using (var client = new HttpClient())
             {
@@ -79,22 +79,21 @@ namespace MercadoPago.DotNet
             }
         }
 
-        internal async Task<Response<T>> Exec<T>(HttpMethod method, string uri, JObject content, ICollection<KeyValuePair<string, string>> parameters, string contentType = MIME_JSON, bool requiresAccessToken = true)
+        internal async Task<Response<TResponse>> Exec<TResponse,TContent>(HttpMethod method, string uri, TContent content, ICollection<KeyValuePair<string, string>> parameters, string contentType = MIME_JSON, bool requiresAccessToken = true) where TResponse:class where TContent:class
         {
-            var result = await Exec(method, uri, content, parameters, contentType, requiresAccessToken);
-
-            return new Response<T>(result["status"].Value<HttpStatusCode>(), result["response"].ToObject<T>(new JsonSerializer()));
-
+            var result = await Exec(method, uri, content.ToJson(), parameters, contentType, requiresAccessToken);
+            
+            return new Response<TResponse>(result["status"].Value<HttpStatusCode>(), result["response"].To<TResponse>());
         }
 
-        public Task<JObject> Get(string uri, ICollection<KeyValuePair<string, string>> parameters = null, bool requiresAccessToken = true)
+        public Task<Response<TResponse>> Get<TResponse>(string uri, ICollection<KeyValuePair<string, string>> parameters = null, bool requiresAccessToken = true) where TResponse:class
         {
-            return Exec(HttpMethod.Get, uri, null, parameters, MIME_JSON);
+            return Exec<TResponse,object>(HttpMethod.Get, uri, null, parameters, MIME_JSON);
         }
 
-        public Task<JObject> Post(string uri, JObject content, bool requiresAccessToken = true)
+        internal Task<Response<TResponse>> Post<TResponse, TContent>(string uri, TContent content, bool requiresAccessToken = true) where TResponse:class where TContent:class
         {
-            return Exec(HttpMethod.Post, uri, content, null, MIME_JSON);
+            return Exec<TResponse,TContent>(HttpMethod.Post, uri, content, null, MIME_JSON, requiresAccessToken);
         }
 
         public Task<JObject> Put(string uri, JObject data, string contentType = MIME_JSON, bool requiresAccessToken = true)
@@ -102,10 +101,8 @@ namespace MercadoPago.DotNet
             return Exec(HttpMethod.Put, uri, data, null, contentType, requiresAccessToken);
         }
 
-         
-
         /// <summary>
-        /// 
+        /// Enables authentication token persistence. WARNING: this is intended to be used for client apps (desktop / mobile) and NOT Web Applications. If used in a static context it can cause the wrong tokens to be shared between requests in an ASP.Net application.
         /// </summary>
         public void EnableTokenPersistence()
         {
@@ -130,7 +127,7 @@ namespace MercadoPago.DotNet
                 {"client_secret", this.client_secret}
             };
 
-            var response = await Exec<AuthenticationInfo>(HttpMethod.Post, "/oauth/token", null, appClientValues, MIME_FORM, false);
+            var response = await Exec<AuthenticationInfo,object>(HttpMethod.Post, "/oauth/token", null, appClientValues, MIME_FORM, false);
 
             if (response.Status == HttpStatusCode.OK)
             {

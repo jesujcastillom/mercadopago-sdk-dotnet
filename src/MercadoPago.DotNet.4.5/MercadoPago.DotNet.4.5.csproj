@@ -43,14 +43,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="JSON.cs" />
     <Compile Include="Model\Address.cs" />
     <Compile Include="Internal\AuthenticationInfo.cs" />
     <Compile Include="Model\BackUrls.cs" />
     <Compile Include="Model\Identification.cs" />
+    <Compile Include="Internal\IdValueElement.cs" />
     <Compile Include="Model\Item.cs" />
-    <Compile Include="Model\PaymentMethodTypes.cs" />
+    <Compile Include="Model\PaymentTypes.cs" />
     <Compile Include="Model\Preference.cs" />
     <Compile Include="Internal\Response.cs" />
+    <Compile Include="Model\PreferencePaymentMethod.cs" />
     <Compile Include="MP.cs" />
     <Compile Include="Model\Payer.cs" />
     <Compile Include="Model\Phone.cs" />

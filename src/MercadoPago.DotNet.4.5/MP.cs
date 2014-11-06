@@ -75,8 +75,8 @@ namespace MercadoPago.DotNet
         {
             try
             {
-                var paymentInfo = await restClient.Get("/collections/notifications/" + id);
-                return paymentInfo;
+                var paymentInfo = await restClient.Get<JObject>("/collections/notifications/" + id);
+                return paymentInfo.Payload;
             }
             catch (Exception e)
             {
@@ -93,7 +93,7 @@ namespace MercadoPago.DotNet
         {
             try
             {
-                return await restClient.Get("/authorized_payments/" + id);
+                return (await restClient.Get<JObject>("/authorized_payments/" + id)).Payload;
             }
             catch (Exception e)
             {
@@ -181,8 +181,8 @@ namespace MercadoPago.DotNet
                 filters.Add("offset", offset.ToString());
                 filters.Add("limit", limit.ToString());
 
-                var collectionResult = await restClient.Get("/collections/search", filters);
-                return collectionResult;
+                var collectionResult = await restClient.Get<JObject>("/collections/search", filters);
+                return collectionResult.Payload;
             }
             catch (Exception e)
             {
@@ -195,40 +195,14 @@ namespace MercadoPago.DotNet
         /// </summary>
         /// <param name="preference"></param>
         /// <returns></returns>
-        public Task<JObject> CreatePreference(string preference)
+        public async Task<Preference> CreatePreference(Preference preference)
         {
-            var preferenceJSON = JObject.Parse(preference);
-            return this.CreatePreference(preferenceJSON);
-        }
+            var result = await restClient.Post<Preference,Preference>("/checkout/preferences", preference);
 
-        /// <summary>
-        /// Create a checkout preference
-        /// </summary>
-        /// <param name="preference"></param>
-        /// <returns></returns>
-        public async Task<JObject> CreatePreference(JObject preference)
-        {
-            try
-            {
-                var preferenceResult = await restClient.Post("/checkout/preferences", preference);
-                return preferenceResult;
-            }
-            catch (Exception e)
-            {
-                return JObject.FromObject(e);
-            }
-        }
-
-        /// <summary>
-        /// Update a checkout preference
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="preference"></param>
-        /// <returns></returns>
-        public Task<JObject> UpdatePreference(string id, string preference)
-        {
-            JObject preferenceJSON = JObject.Parse(preference);
-            return this.UpdatePreference(id, preferenceJSON);
+            if (result.Status != HttpStatusCode.Created)
+                throw new Exception(result.Status.ToString());
+            
+            return result.Payload;
         }
 
         /// <summary>
@@ -255,17 +229,14 @@ namespace MercadoPago.DotNet
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<JObject> GetPreference(string id)
+        public async Task<Preference> GetPreference(string id)
         {
-            try
-            {
-                var preferenceResult = await restClient.Get("/checkout/preferences/" + id);
-                return preferenceResult;
-            }
-            catch (Exception e)
-            {
-                return JObject.FromObject(e);
-            }
+            var result = await restClient.Get<Preference>("/checkout/preferences/" + id);
+
+            if (result.Status != HttpStatusCode.OK)
+                throw new Exception(result.Status.ToString());
+                
+            return result.Payload;
         }
 
         /// <summary>
@@ -288,8 +259,8 @@ namespace MercadoPago.DotNet
         {
             try
             {
-                var preapprovalPaymentResult = await restClient.Post("/preapproval", preapprovalPayment);
-                return preapprovalPaymentResult;
+                var preapprovalPaymentResult = await restClient.Post<JObject,JObject>("/preapproval", preapprovalPayment);
+                return preapprovalPaymentResult.Payload;
             }
             catch (Exception e)
             {
@@ -306,8 +277,8 @@ namespace MercadoPago.DotNet
         {
             try
             {
-                var preapprovalPaymentResult = await restClient.Get("/preapproval/" + id);
-                return preapprovalPaymentResult;
+                var preapprovalPaymentResult = await restClient.Get<JObject>("/preapproval/" + id);
+                return preapprovalPaymentResult.Payload;
             }
             catch (Exception e)
             {

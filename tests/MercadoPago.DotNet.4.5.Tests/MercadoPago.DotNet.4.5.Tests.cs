@@ -86,8 +86,22 @@ namespace MercadoPago.DotNet.Tests
                     }
                 }
             };
-            var jobject = JObject.FromObject(pref, new JsonSerializer() { NullValueHandling = NullValueHandling.Ignore });
-            var result = mp.CreatePreference(jobject).Result;
+            
+            // Create a Preference and verify it's returned properly.
+            var result = mp.CreatePreference(pref).Result;
+            Assert.NotNull(result);
+            Assert.IsNotNullOrEmpty(result.Id);
+
+            // Query the same Preference just created by Id
+            var reloaded = mp.GetPreference(result.Id).Result;
+            Assert.NotNull(reloaded);
+            Assert.IsNotNullOrEmpty(reloaded.Id);
+            
+            // Verify both Ids match
+            Assert.AreEqual(result.Id, reloaded.Id);
+
+            // Verify number of items match
+            Assert.AreEqual(result.Items.Count, reloaded.Items.Count);
         }
     }
 }

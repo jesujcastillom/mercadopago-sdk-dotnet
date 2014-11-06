@@ -47,8 +47,14 @@
     <Compile Include="..\MercadoPago.DotNet.4.5\Internal\AuthenticationInfo.cs">
       <Link>Internal\AuthenticationInfo.cs</Link>
     </Compile>
+    <Compile Include="..\MercadoPago.DotNet.4.5\Internal\IdValueElement.cs">
+      <Link>Internal\IdValueElement.cs</Link>
+    </Compile>
     <Compile Include="..\MercadoPago.DotNet.4.5\Internal\Response.cs">
       <Link>Internal\Response.cs</Link>
+    </Compile>
+    <Compile Include="..\MercadoPago.DotNet.4.5\JSON.cs">
+      <Link>JSON.cs</Link>
     </Compile>
     <Compile Include="..\MercadoPago.DotNet.4.5\Model\Address.cs">
       <Link>Model\Address.cs</Link>
@@ -65,14 +71,17 @@
     <Compile Include="..\MercadoPago.DotNet.4.5\Model\Payer.cs">
       <Link>Model\Payer.cs</Link>
     </Compile>
-    <Compile Include="..\MercadoPago.DotNet.4.5\Model\PaymentMethodTypes.cs">
-      <Link>Model\PaymentMethodTypes.cs</Link>
+    <Compile Include="..\MercadoPago.DotNet.4.5\Model\PaymentTypes.cs">
+      <Link>Model\PaymentTypes.cs</Link>
     </Compile>
     <Compile Include="..\MercadoPago.DotNet.4.5\Model\Phone.cs">
       <Link>Model\Phone.cs</Link>
     </Compile>
     <Compile Include="..\MercadoPago.DotNet.4.5\Model\Preference.cs">
       <Link>Model\Preference.cs</Link>
+    </Compile>
+    <Compile Include="..\MercadoPago.DotNet.4.5\Model\PreferencePaymentMethod.cs">
+      <Link>Model\PreferencePaymentMethod.cs</Link>
     </Compile>
     <Compile Include="..\MercadoPago.DotNet.4.5\MP.cs">
       <Link>MP.cs</Link>
