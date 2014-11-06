@@ -4,7 +4,7 @@
 // Created          : 11-05-2014
 //
 // Last Modified By : Federico Berasategui
-// Last Modified On : 11-05-2014
+// Last Modified On : 11-06-2014
 // ***********************************************************************
 // MercadoPago Integration library.
 // ***********************************************************************

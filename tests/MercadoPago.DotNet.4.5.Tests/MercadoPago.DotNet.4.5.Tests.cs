@@ -12,15 +12,23 @@ namespace MercadoPago.DotNet.Tests
     [TestFixture]
     public partial class MPTests
     {
+        private static MP mp;
+
         static void Main(string[] args)
         {
             var tests = new MPTests();
+
+            mp = new MP(Client_ID, Client_Secret);
+            mp.EnableTokenPersistence();
+
             tests.SerializationTest();
             tests.SearchPayments();
+            tests.CreatePreference();
         }
 
-        private string Client_ID;
-        private string Client_Secret;
+        
+        private static string Client_ID;
+        private static string Client_Secret;
 
         [Test]
         public void SerializationTest()
@@ -51,11 +59,29 @@ namespace MercadoPago.DotNet.Tests
         [Test]
         public void SearchPayments()
         {
-            var mp = new MP(this.Client_ID, this.Client_Secret, true);
-
             var result = mp.SearchPayments(new Dictionary<string, string> {{"site_id", "MLA"}}).Result;
 
             var s = result["status"];
+        }
+
+        [Test]
+        public void CreatePreference()
+        {
+            var pref = new Preference()
+            {
+                Items =
+                {
+                    new Item()
+                    {
+                        Title = "sdk-dotnet",
+                        Quantity = 1,
+                        CurrencyId = "ARS",
+                        UnitPrice = 10.5m,
+                    }
+                }
+            };
+            var jobject = JObject.FromObject(pref, new JsonSerializer() { NullValueHandling = NullValueHandling.Ignore });
+            var result = mp.CreatePreference(jobject).Result;
         }
     }
 }
