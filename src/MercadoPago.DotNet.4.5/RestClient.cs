@@ -1,3 +1,14 @@
+// ***********************************************************************
+// Assembly         : MercadoPago.DotNet.4.5
+// Author           : Federico Berasategui
+// Created          : 11-05-2014
+//
+// Last Modified By : Federico Berasategui
+// Last Modified On : 11-06-2014
+// ***********************************************************************
+// RESTful client for the MercadoPago Integration library.
+// ***********************************************************************
+
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -81,19 +92,45 @@ namespace MercadoPago.DotNet
             return new Response<TResponse>(result["status"].Value<HttpStatusCode>(), result["response"].To<TResponse>());
         }
 
+        /// <summary>
+        /// Sends an HTTP GET request to the specified relative Uri with the specified content.
+        /// </summary>
+        /// <typeparam name="TResponse">A Json-serializable type compatible with the data returned by the RESTful service in the response.</typeparam>
+        /// <param name="uri">The path relative to the service base address. For example "/checkout/preferences".</param>
+        /// <param name="parameters">a list of key/value pairs contaning the URL Query String data.</param>
+        /// <param name="requiresAccessToken">if set to True (or implicit), appends the OAuth2 token to the URL Query String.</param>
+        /// <returns></returns>
         public Task<Response<TResponse>> Get<TResponse>(string uri, ICollection<KeyValuePair<string, string>> parameters = null, bool requiresAccessToken = true) where TResponse:class
         {
             return Exec<TResponse,object>(HttpMethod.Get, uri, null, parameters, MIME_JSON);
         }
 
+        /// <summary>
+        /// Sends an HTTP POST request to the specified relative Uri with the specified content.
+        /// </summary>
+        /// <typeparam name="TResponse">A Json-serializable type compatible with the data returned by the RESTful service in the response.</typeparam>
+        /// <typeparam name="TContent">A Json-serializable type compatible with the HTTP content expected by the RESTful service in the request.</typeparam>
+        /// <param name="uri">The path relative to the service base address. For example "/checkout/preferences".</param>
+        /// <param name="content">An instance of type TContent that will be sent as the HTTP content.</param>
+        /// <param name="requiresAccessToken">if set to True (or implicit), appends the OAuth2 token to the URL Query String.</param>
+        /// <returns>An Response instance containing the HTTP status code and the deserialized instance of TResponse.</returns>
         public Task<Response<TResponse>> Post<TResponse, TContent>(string uri, TContent content, bool requiresAccessToken = true) where TResponse:class where TContent:class
         {
             return Exec<TResponse,TContent>(HttpMethod.Post, uri, content, null, MIME_JSON, requiresAccessToken);
         }
 
-        public Task<Response<TResponse>> Put<TResponse, TContent>(string uri, TContent content, string contentType = MIME_JSON, bool requiresAccessToken = true) where TContent:class where TResponse:class
+        /// <summary>
+        /// Sends an HTTP PUT request to the specified relative Uri with the specified content.
+        /// </summary>
+        /// <typeparam name="TResponse">A Json-serializable type compatible with the data returned by the RESTful service in the response.</typeparam>
+        /// <typeparam name="TContent">A Json-serializable type compatible with the HTTP content expected by the RESTful service in the request.</typeparam>
+        /// <param name="uri">The path relative to the service base address. For example "/checkout/preferences".</param>
+        /// <param name="content">An instance of type TContent that will be sent as the HTTP content.</param>
+        /// <param name="requiresAccessToken">if set to True (or implicit), appends the OAuth2 token to the URL Query String.</param>
+        /// <returns>An Response instance containing the HTTP status code and the deserialized instance of TResponse.</returns>
+        public Task<Response<TResponse>> Put<TResponse, TContent>(string uri, TContent content, bool requiresAccessToken = true) where TContent:class where TResponse:class
         {
-            return Exec<TResponse,TContent>(HttpMethod.Put, uri, content, null, contentType, requiresAccessToken);
+            return Exec<TResponse,TContent>(HttpMethod.Put, uri, content, null, MIME_JSON, requiresAccessToken);
         }
 
         /// <summary>
