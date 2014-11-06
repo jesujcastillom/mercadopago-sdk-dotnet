@@ -44,13 +44,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\Address.cs" />
-    <Compile Include="Model\AuthenticationInfo.cs" />
+    <Compile Include="Internal\AuthenticationInfo.cs" />
     <Compile Include="Model\BackUrls.cs" />
     <Compile Include="Model\Identification.cs" />
     <Compile Include="Model\Item.cs" />
     <Compile Include="Model\PaymentMethodTypes.cs" />
     <Compile Include="Model\Preference.cs" />
-    <Compile Include="Model\Response.cs" />
+    <Compile Include="Internal\Response.cs" />
     <Compile Include="MP.cs" />
     <Compile Include="Model\Payer.cs" />
     <Compile Include="Model\Phone.cs" />
